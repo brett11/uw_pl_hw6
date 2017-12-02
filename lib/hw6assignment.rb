@@ -7,7 +7,7 @@ class MyPiece < Piece
   # The constant All_My_Pieces should be declared here
 
   # your enhancements here
-  All_Pieces = [[[[0, 0], [1, 0], [0, 1], [1, 1]]], # square (only needs one)
+  All_My_Pieces = [[[[0, 0], [1, 0], [0, 1], [1, 1]]], # square (only needs one)
                 rotations([[0, 0], [-1, 0], [1, 0], [0, -1]]), # T
                 [[[0, 0], [-1, 0], [1, 0], [2, 0]], # long (only needs two)
                  [[0, 0], [0, -1], [0, 1], [0, 2]]],
@@ -18,18 +18,18 @@ class MyPiece < Piece
                 [[[0, 0], [-1, 0], [1, 0], [2, 0], [2, 0]],
                  [[0, 0], [0, -1], [0, 1], [0, -2], 0, 2]], # bf added extra long 5 piecer (only needs two)
                 rotations([[0, 0], [1, 0], [0, 1], [1, 1], [2, 0]]), # bf added square + extra
-                rotations([[0, 0], [1, 0], [0, 1]])]
+                rotations([[0, 0], [1, 0], [0, 1]])] #bf added, three piecer
 
   def number_of_blocks
     #all_rotations holds point array. this gets how many array elements are in the first rotation, which equals how many blocks there are
     @all_rotations[0].size
   end
 
-  def self.next_piece (board, cheat)
-    if cheat
+  def self.next_piece(board)
+    if board.cheat
       MyPiece.new([[[0, 0]]], board)
     else
-      MyPiece.new(All_Pieces.sample, board)
+      MyPiece.new(All_My_Pieces.sample, board)
     end
   end
 end
@@ -38,11 +38,15 @@ class MyBoard < Board
   # your enhancements here
   def initialize (game)
     @grid = Array.new(num_rows) { Array.new(num_columns) }
-    @current_block = MyPiece.next_piece(self, false)
+    @current_block = MyPiece.next_piece(self)
     @score = 0
     @game = game
     @delay = 500
     @cheat = false
+  end
+
+  def cheat
+    @cheat
   end
 
   def score=(new_score)
@@ -66,7 +70,7 @@ class MyBoard < Board
   end
 
   def next_piece
-    @current_block = MyPiece.next_piece(self, @cheat)
+    @current_block = MyPiece.next_piece(self)
     @current_pos = nil
     deactivate_cheat
   end
